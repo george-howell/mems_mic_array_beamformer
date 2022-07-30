@@ -49,10 +49,7 @@ component micArrayBeamformer_top
     port      ( CLK                 : in    std_logic;  -- board clock (100Mhz)
                 -- PDM SIGNALS
                 CLK_PDM_HD          : out   std_logic;  -- pdm mic clock (3.072 MHz)
-                PDM_DIN_1           : in    std_logic;  -- pdm input data 1
-                PDM_DIN_2           : in    std_logic;  -- pdm input data 2
-                PDM_DIN_3           : in    std_logic;  -- pdm input data 3
-                PDM_DIN_4           : in    std_logic;  -- pdm input data 4
+                PDM_DIN             : in    std_logic_vector (3 downto 0);  -- pdm input data (PDM_DIN[0] = mic1 & mic 2, etc)
                 -- SEVEN SEG DISPLAY
                 SSD_SEG_NUM         : out std_logic_vector (3 downto 0);
                 SSD_SEG_VALUE       : out std_logic_vector (6 downto 0)
@@ -75,13 +72,10 @@ constant    clkPdmHP            : time                              := 162.7604n
 signal      dataStartCue        : std_logic                         := '0';         -- signal that only allows pdm data start once
 constant    pdmDataStart        : time                              := 7881.068ns;  -- time before pdm data starts
 signal      endoffile           : bit                               := '0';         -- bit for indicating end of file.
-signal      pdmData1            : std_logic;
+signal      pdmData             : std_logic_vector (3 downto 0);
 signal      pdmDataTmp1         : std_logic_vector (0 downto 0);
-signal      pdmData2            : std_logic;
 signal      pdmDataTmp2         : std_logic_vector (0 downto 0);
-signal      pdmData3            : std_logic;
 signal      pdmDataTmp3         : std_logic_vector (0 downto 0);
-signal      pdmData4            : std_logic;
 signal      pdmDataTmp4         : std_logic_vector (0 downto 0);
 
 -- seven segment display signals
@@ -97,10 +91,7 @@ begin
     port map  ( CLK             => simClk,     
                 CLK_PDM_HD      => clkPdmHD,
                 -- PDM SIGNALS
-                PDM_DIN_1       => pdmData1,
-                PDM_DIN_2       => pdmData2,
-                PDM_DIN_3       => pdmData3,
-                PDM_DIN_4       => pdmData4,
+                PDM_DIN         => pdmData,
                 SSD_SEG_NUM     => ssdSegNum,
                 SSD_SEG_VALUE   => ssdSegVal
                 );    
@@ -240,24 +231,24 @@ begin
     end process;
     
     -- pdm pair 1
-    pdmData1 <=  '1' when (pdmDataTmp1 = "1") else
-                 '0' when (pdmDataTmp1 = "0") else
-                 'U';
+    pdmData(0) <=   '1' when (pdmDataTmp1 = "1") else
+                    '0' when (pdmDataTmp1 = "0") else
+                    'U';
                  
     -- pdm pair 2
-    pdmData2 <=  '1' when (pdmDataTmp2 = "1") else
-                 '0' when (pdmDataTmp2 = "0") else
-                 'U';
+    pdmData(1) <=   '1' when (pdmDataTmp2 = "1") else
+                    '0' when (pdmDataTmp2 = "0") else
+                    'U';
     
     -- pdm pair 3
-    pdmData3 <=  '1' when (pdmDataTmp3 = "1") else
-                 '0' when (pdmDataTmp3 = "0") else
-                 'U';
+    pdmData(2) <=   '1' when (pdmDataTmp3 = "1") else
+                    '0' when (pdmDataTmp3 = "0") else
+                    'U';
     
     -- pdm pair 4
-    pdmData4 <=  '1' when (pdmDataTmp4 = "1") else
-                 '0' when (pdmDataTmp4 = "0") else
-                 'U';
+    pdmData(3) <=   '1' when (pdmDataTmp4 = "1") else
+                    '0' when (pdmDataTmp4 = "0") else
+                    'U';
                  
     
                 

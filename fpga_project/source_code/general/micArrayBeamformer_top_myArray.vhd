@@ -43,10 +43,7 @@ entity micArrayBeamformer_top is
     port      ( CLK                 : in    std_logic;  -- board clock (100Mhz)
                 -- PDM SIGNALS
                 CLK_PDM_HD          : out   std_logic;  -- pdm mic clock (3.072 MHz)
-                PDM_DIN_1           : in    std_logic;  -- pdm input data 1
-                PDM_DIN_2           : in    std_logic;  -- pdm input data 2
-                PDM_DIN_3           : in    std_logic;  -- pdm input data 3
-                PDM_DIN_4           : in    std_logic;  -- pdm input data 4
+                PDM_DIN             : in    std_logic_vector (3 downto 0);  -- pdm input data (PDM_DIN[0] = mic1 & mic 2, where mic1 clocked on HIGH, mic 2 clocked on LOW)
                 -- SEVEN SEG DISPLAY
                 SSD_SEG_NUM         : out   std_logic_vector (3 downto 0);
                 SSD_SEG_VALUE       : out   std_logic_vector (6 downto 0);
@@ -86,10 +83,7 @@ component pdm2bitDecode
                 CLK                 : in    std_logic;          -- system clk
                 CLK_PDM_CE          : in    std_logic;          -- pdm clock enable
                 -- PDM DATA
-                PDM_DIN_1           : in    std_logic;           -- pdm data input pair 1
-                PDM_DIN_2           : in    std_logic;           -- pdm data input pair 2
-                PDM_DIN_3           : in    std_logic;           -- pdm data input pair 3
-                PDM_DIN_4           : in    std_logic;           -- pdm data input pair 4
+                PDM_DIN             : in    std_logic_vector (3 downto 0);    -- pdm data input
                 PDM_2BIT_DOUT       : out   vector_of_stdLogVec2bit (0 to 7)  -- pdm data output in 2 bit format
                 );
 end component;
@@ -249,10 +243,7 @@ begin
                     CLK                 => clkMmcm,
                     CLK_PDM_CE          => clkPdmCE,
                     -- PDM DATA
-                    PDM_DIN_1           => PDM_DIN_1,
-                    PDM_DIN_2           => PDM_DIN_2,
-                    PDM_DIN_3           => PDM_DIN_3,
-                    PDM_DIN_4           => PDM_DIN_4,
+                    PDM_DIN             => PDM_DIN,
                     PDM_2BIT_DOUT       => pdm2BitVec
                     );
  

@@ -38,17 +38,14 @@ use work.instruction_buffer_type.all;
 -----------------------------------------------------------------------------
 
 entity pdm2bitDecode is
-    generic   ( PDM_BIT1_OFFSET_VAL : integer       := 2;      -- this is the number of sys clk cycles before mic1 pdm data is captured
-                PDM_BIT2_OFFSET_VAL : integer       := 7       -- this is the number of sys clk cycles before mic1 pdm data is captured
+    generic   ( PDM_BIT1_OFFSET_VAL : integer       := 7;      -- this is the number of sys clk cycles before mic1 pdm data is captured
+                PDM_BIT2_OFFSET_VAL : integer       := 2       -- this is the number of sys clk cycles before mic1 pdm data is captured
                 );
     port      ( RST                 : in    std_logic;          -- system reset
                 CLK                 : in    std_logic;          -- system clk
                 CLK_PDM_CE          : in    std_logic;          -- pdm clock enable
                 -- PDM DATA
-                PDM_DIN_1           : in    std_logic;           -- pdm data input pair 1
-                PDM_DIN_2           : in    std_logic;           -- pdm data input pair 2
-                PDM_DIN_3           : in    std_logic;           -- pdm data input pair 3
-                PDM_DIN_4           : in    std_logic;           -- pdm data input pair 4
+                PDM_DIN             : in    std_logic_vector (3 downto 0);    -- pdm data input
                 PDM_2BIT_DOUT       : out   vector_of_stdLogVec2bit (0 to 7)  -- pdm data output in 2 bit format
                 );
 end pdm2bitDecode;
@@ -69,32 +66,11 @@ signal pdmBit1Flg                   : std_logic;
 signal pdmBit2Flg                   : std_logic;
 
 -- pdm latch signals
-signal pdmLatch1                    : std_logic;
-signal pdmLatch2                    : std_logic;
-signal pdmLatch3                    : std_logic;
-signal pdmLatch4                    : std_logic;
-signal pdmLatch5                    : std_logic;
-signal pdmLatch6                    : std_logic;
-signal pdmLatch7                    : std_logic;
-signal pdmLatch8                    : std_logic;
+signal pdmLatch                     : std_logic_vector (7 downto 0);
 
 -- pdm output signals
-signal pdm2Bit1Tmp                  : std_logic_vector (1 downto 0);
-signal pdm2Bit2Tmp                  : std_logic_vector (1 downto 0);
-signal pdm2Bit3Tmp                  : std_logic_vector (1 downto 0);
-signal pdm2Bit4Tmp                  : std_logic_vector (1 downto 0);
-signal pdm2Bit5Tmp                  : std_logic_vector (1 downto 0);
-signal pdm2Bit6Tmp                  : std_logic_vector (1 downto 0);
-signal pdm2Bit7Tmp                  : std_logic_vector (1 downto 0);
-signal pdm2Bit8Tmp                  : std_logic_vector (1 downto 0);
-signal pdm2Bit1                     : std_logic_vector (1 downto 0);
-signal pdm2Bit2                     : std_logic_vector (1 downto 0);
-signal pdm2Bit3                     : std_logic_vector (1 downto 0);
-signal pdm2Bit4                     : std_logic_vector (1 downto 0);
-signal pdm2Bit5                     : std_logic_vector (1 downto 0);
-signal pdm2Bit6                     : std_logic_vector (1 downto 0);
-signal pdm2Bit7                     : std_logic_vector (1 downto 0);
-signal pdm2Bit8                     : std_logic_vector (1 downto 0);
+signal pdm2BitTmp                   : vector_of_stdLogVec2bit (0 to 7);
+signal pdm2Bit                      : vector_of_stdLogVec2bit (0 to 7);
 
 begin
 
@@ -133,98 +109,42 @@ begin
     process (RST, CLK)
     begin
         if (RST = '1') then
-            pdmLatch1 <= 'U'; 
-            pdmLatch2 <= 'U';
-            pdmLatch3 <= 'U'; 
-            pdmLatch4 <= 'U';
-            pdmLatch5 <= 'U'; 
-            pdmLatch6 <= 'U';
-            pdmLatch7 <= 'U'; 
-            pdmLatch8 <= 'U';        
+            pdmLatch <= (others => 'U');       
         elsif (rising_edge(CLK)) then -- latches pdm data from the mics at the offset flag
             if (pdmBit1Flg = '1') then
-                pdmLatch1 <= PDM_DIN_1;
-                pdmLatch3 <= PDM_DIN_2;
-                pdmLatch5 <= PDM_DIN_3;
-                pdmLatch7 <= PDM_DIN_4;
+                pdmLatch(0) <= PDM_DIN(0);
+                pdmLatch(2) <= PDM_DIN(1);
+                pdmLatch(4) <= PDM_DIN(2);
+                pdmLatch(6) <= PDM_DIN(3);
             elsif (pdmBit2Flg = '1') then
-                pdmLatch2 <= PDM_DIN_1;
-                pdmLatch4 <= PDM_DIN_2;
-                pdmLatch6 <= PDM_DIN_3;
-                pdmLatch8 <= PDM_DIN_4;                
+                pdmLatch(1) <= PDM_DIN(0);
+                pdmLatch(3) <= PDM_DIN(1);
+                pdmLatch(5) <= PDM_DIN(2);
+                pdmLatch(7) <= PDM_DIN(3);                
             end if;
         end if;
     end process;
     
+    g1: for micIdx in 0 to 7 generate 
+        pdm2BitTmp(micIdx) <=   "01" when (pdmLatch(micIdx) = '1') else
+                                "11" when (pdmLatch(micIdx) = '0') else
+                                "00";
+    end generate;
     
-    -- CONVERTS DATA TO 2 BITS
-    pdm2Bit1Tmp <=   "01" when (pdmLatch1 = '1') else
-                     "11" when (pdmLatch1 = '0') else
-                     "00"; 
-    
-    pdm2Bit2Tmp <=   "01" when (pdmLatch2 = '1') else
-                     "11" when (pdmLatch2 = '0') else
-                     "00"; 
-                        
-    pdm2Bit3Tmp <=   "01" when (pdmLatch3 = '1') else
-                     "11" when (pdmLatch3 = '0') else
-                     "00"; 
-    
-    pdm2Bit4Tmp <=   "01" when (pdmLatch4 = '1') else
-                     "11" when (pdmLatch4 = '0') else
-                     "00"; 
-                      
-    pdm2Bit5Tmp <=   "01" when (pdmLatch5 = '1') else
-                     "11" when (pdmLatch5 = '0') else
-                     "00"; 
-    
-    pdm2Bit6Tmp <=   "01" when (pdmLatch6 = '1') else
-                     "11" when (pdmLatch6 = '0') else
-                     "00"; 
-    
-    pdm2Bit7Tmp <=   "01" when (pdmLatch7 = '1') else
-                     "11" when (pdmLatch7 = '0') else
-                     "00"; 
-    
-    pdm2Bit8Tmp <=   "01" when (pdmLatch8 = '1') else
-                     "11" when (pdmLatch8 = '0') else
-                     "00";
-                         
     --------------------------------- PDM OUTPUT --------------------------------------
     
     process (RST, CLK)
     begin
         if (RST = '1') then
-            pdm2Bit1 <= (others => '0');
-            pdm2Bit2 <= (others => '0');
-            pdm2Bit3 <= (others => '0');
-            pdm2Bit4 <= (others => '0');
-            pdm2Bit5 <= (others => '0');
-            pdm2Bit6 <= (others => '0');
-            pdm2Bit7 <= (others => '0');
-            pdm2Bit8 <= (others => '0');
+            pdm2Bit <= (others => (others => '0'));
         elsif (rising_edge(CLK)) then
             if (CLK_PDM_CE = '1') then
-                pdm2Bit1 <= pdm2Bit1Tmp;
-                pdm2Bit2 <= pdm2Bit2Tmp;
-                pdm2Bit3 <= pdm2Bit3Tmp;
-                pdm2Bit4 <= pdm2Bit4Tmp;
-                pdm2Bit5 <= pdm2Bit5Tmp;
-                pdm2Bit6 <= pdm2Bit6Tmp;
-                pdm2Bit7 <= pdm2Bit7Tmp;
-                pdm2Bit8 <= pdm2Bit8Tmp;  
+                pdm2Bit <= pdm2BitTmp; 
             end if;
         end if;
     end process;
     
     -- output
-    PDM_2BIT_DOUT(0) <= pdm2Bit1Tmp when (CLK_PDM_CE = '1') else pdm2Bit1;
-    PDM_2BIT_DOUT(1) <= pdm2Bit2Tmp when (CLK_PDM_CE = '1') else pdm2Bit2;
-    PDM_2BIT_DOUT(2) <= pdm2Bit3Tmp when (CLK_PDM_CE = '1') else pdm2Bit3;
-    PDM_2BIT_DOUT(3) <= pdm2Bit4Tmp when (CLK_PDM_CE = '1') else pdm2Bit4;
-    PDM_2BIT_DOUT(4) <= pdm2Bit5Tmp when (CLK_PDM_CE = '1') else pdm2Bit5;
-    PDM_2BIT_DOUT(5) <= pdm2Bit6Tmp when (CLK_PDM_CE = '1') else pdm2Bit6;
-    PDM_2BIT_DOUT(6) <= pdm2Bit7Tmp when (CLK_PDM_CE = '1') else pdm2Bit7;
-    PDM_2BIT_DOUT(7) <= pdm2Bit8Tmp when (CLK_PDM_CE = '1') else pdm2Bit8;                                            
+    PDM_2BIT_DOUT <= pdm2BitTmp when (CLK_PDM_CE = '1') else pdm2Bit;                                            
 
 end Behavioral;
