@@ -186,20 +186,20 @@ set_property IOSTANDARD LVCMOS33 [get_ports MOTOR_SIG_OUT[3]]
 
 #Pmod Header JC
 #Sch name = JC1
-#set_property PACKAGE_PIN K17 [get_ports CLK_PDM_HD]
-#set_property IOSTANDARD LVCMOS33 [get_ports CLK_PDM_HD]
-##Sch name = JC2
-#set_property PACKAGE_PIN M18 [get_ports CS_N]
-#set_property IOSTANDARD LVCMOS33 [get_ports CS_N]
-##Sch name = JC3
-#set_property PACKAGE_PIN N17 [get_ports MOSI]
-#set_property IOSTANDARD LVCMOS33 [get_ports MOSI]
-##Sch name = JC4
-#set_property PACKAGE_PIN P18 [get_ports MISO]
-#set_property IOSTANDARD LVCMOS33 [get_ports MISO]
+set_property PACKAGE_PIN K17 [get_ports PDM_DIN[0]]
+set_property IOSTANDARD LVCMOS33 [get_ports PDM_DIN[0]]
+#Sch name = JC2
+set_property PACKAGE_PIN M18 [get_ports PDM_DIN[1]]
+set_property IOSTANDARD LVCMOS33 [get_ports PDM_DIN[1]]
+#Sch name = JC3
+set_property PACKAGE_PIN N17 [get_ports PDM_DIN[2]]
+set_property IOSTANDARD LVCMOS33 [get_ports PDM_DIN[2]]
+#Sch name = JC4
+set_property PACKAGE_PIN P18 [get_ports PDM_DIN[3]]
+set_property IOSTANDARD LVCMOS33 [get_ports PDM_DIN[3]]
 #Sch name = JC7
-#set_property PACKAGE_PIN L17 [get_ports CLK_PDM_HD]
-#set_property IOSTANDARD LVCMOS33 [get_ports CLK_PDM_HD]
+set_property PACKAGE_PIN L17 [get_ports CLK_PDM_HD]
+set_property IOSTANDARD LVCMOS33 [get_ports CLK_PDM_HD]
 ##Sch name = JC8
 #set_property PACKAGE_PIN M19 [get_ports {JC[5]}]
 #set_property IOSTANDARD LVCMOS33 [get_ports {JC[5]}]
@@ -214,20 +214,20 @@ set_property IOSTANDARD LVCMOS33 [get_ports MOTOR_SIG_OUT[3]]
 
 #Pmod Header JXADC
 #Sch name = XA1_P
-set_property PACKAGE_PIN J3 [get_ports PDM_DIN_1]
-set_property IOSTANDARD LVCMOS33 [get_ports PDM_DIN_1]
-#Sch name = XA2_P
-set_property PACKAGE_PIN L3 [get_ports PDM_DIN_2]
-set_property IOSTANDARD LVCMOS33 [get_ports PDM_DIN_2]
-#Sch name = XA3_P
-set_property PACKAGE_PIN M2 [get_ports PDM_DIN_3]
-set_property IOSTANDARD LVCMOS33 [get_ports PDM_DIN_3]
-#Sch name = XA4_P
-set_property PACKAGE_PIN N2 [get_ports PDM_DIN_4]
-set_property IOSTANDARD LVCMOS33 [get_ports PDM_DIN_4]
-#Sch name = XA1_N
-set_property PACKAGE_PIN K3 [get_ports CLK_PDM_HD]
-set_property IOSTANDARD LVCMOS33 [get_ports CLK_PDM_HD]
+#set_property PACKAGE_PIN J3 [get_ports PDM_DIN[0]]
+#set_property IOSTANDARD LVCMOS33 [get_ports PDM_DIN[0]]
+##Sch name = XA2_P
+#set_property PACKAGE_PIN L3 [get_ports PDM_DIN[1]]
+#set_property IOSTANDARD LVCMOS33 [get_ports PDM_DIN[1]]
+##Sch name = XA3_P
+#set_property PACKAGE_PIN M2 [get_ports PDM_DIN[2]]
+#set_property IOSTANDARD LVCMOS33 [get_ports PDM_DIN[2]]
+##Sch name = XA4_P
+#set_property PACKAGE_PIN N2 [get_ports PDM_DIN[3]]
+#set_property IOSTANDARD LVCMOS33 [get_ports PDM_DIN[3]]
+##Sch name = XA1_N
+#set_property PACKAGE_PIN K3 [get_ports CLK_PDM_HD]
+#set_property IOSTANDARD LVCMOS33 [get_ports CLK_PDM_HD]
 ##Sch name = XA2_N
 #set_property PACKAGE_PIN M3 [get_ports {MOTOR_SIG_OUT[1]}]
 #	set_property IOSTANDARD LVCMOS33 [get_ports {MOTOR_SIG_OUT[1]}]
