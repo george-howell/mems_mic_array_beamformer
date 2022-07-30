@@ -1,0 +1,8 @@
+.DS_Store
+array_pcb_design/
+case_design/
+matlab_model/
+fpga_project/matrix_creator_passthrough/
+fpga_project/sim_mic_data/
+fpga_project/vivado_project_matrix_array/
+fpga_project/vivado_project_my_array/
