@@ -6,3 +6,4 @@ fpga_project/matrix_creator_passthrough/
 fpga_project/sim_mic_data/
 fpga_project/vivado_project_matrix_array/
 fpga_project/vivado_project_my_array/
+.stignore
